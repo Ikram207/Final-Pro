@@ -1,0 +1,49 @@
+import React, { useState } from 'react';
+import { register } from '../services/api';
+
+export default function Register({ onRegister }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    const result = await register(email, password);
+    if (result.message) {
+      setSuccess('Inscription réussie ! Vous pouvez vous connecter.');
+      setEmail('');
+      setPassword('');
+      onRegister();
+    } else {
+      setError(result.error || 'Erreur lors de l\'inscription');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2>Inscription</h2>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        required
+      />
+      <br />
+      <input
+        type="password"
+        placeholder="Mot de passe"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        required
+      />
+      <br />
+      <button type="submit">S'inscrire</button>
+      {success && <p style={{color: 'green'}}>{success}</p>}
+      {error && <p style={{color: 'red'}}>{error}</p>}
+    </form>
+  );
+}
