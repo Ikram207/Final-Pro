@@ -1,5 +1,6 @@
-const API_URL = 'http://localhost:5000/api'; // adapte selon ton backend
+const API_URL = 'http://localhost:5000/api'; // adapte selon l’URL de ton backend
 
+// Enregistrement utilisateur
 export async function register(email, password) {
   const res = await fetch(`${API_URL}/users/register`, {
     method: 'POST',
@@ -9,6 +10,7 @@ export async function register(email, password) {
   return res.json();
 }
 
+// Connexion utilisateur
 export async function login(email, password) {
   const res = await fetch(`${API_URL}/users/login`, {
     method: 'POST',
@@ -18,20 +20,44 @@ export async function login(email, password) {
   return res.json();
 }
 
-export async function createTask(token, title, dueDate) {
+// Création d’une tâche
+export async function createTask(token, taskData) {
   const res = await fetch(`${API_URL}/tasks`, {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ title, dueDate }),
+    body: JSON.stringify(taskData),
   });
   return res.json();
 }
 
+// Récupérer la liste des tâches
 export async function getTasks(token) {
   const res = await fetch(`${API_URL}/tasks`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
+
+// Modifier une tâche
+export async function updateTask(token, id, updatedData) {
+  const res = await fetch(`${API_URL}/tasks/${id}`, {
+    method: 'PUT',
+    headers: { 
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(updatedData),
+  });
+  return res.json();
+}
+
+// Supprimer une tâche
+export async function deleteTask(token, id) {
+  const res = await fetch(`${API_URL}/tasks/${id}`, {
+    method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   });
   return res.json();
