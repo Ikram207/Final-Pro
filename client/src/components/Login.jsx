@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { login } from '../services/api';
+import '../styles/auth.css'; // Import du style
 
 export default function Login({ onLogin }) {
   const [email, setEmail] = useState('');
@@ -18,26 +19,30 @@ export default function Login({ onLogin }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Connexion</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        required
-      />
-      <br />
-      <input
-        type="password"
-        placeholder="Mot de passe"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        required
-      />
-      <br />
-      <button type="submit">Se connecter</button>
-      {error && <p style={{color: 'red'}}>{error}</p>}
-    </form>
+    <div className="auth-container">
+      <div className="auth-card">
+        <form onSubmit={handleSubmit}>
+          <h2>Connexion</h2>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+          />
+          <br />
+          <input
+            type="password"
+            placeholder="Mot de passe"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+          />
+          <br />
+          <button type="submit">Se connecter</button>
+          {error && <p style={{color: 'red'}}>{error}</p>}
+        </form>
+      </div>
+    </div>
   );
 }

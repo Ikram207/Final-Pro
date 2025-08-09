@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { register } from '../services/api';
+import '../styles/auth.css'; // Import du style
 
 export default function Register({ onRegister }) {
   const [email, setEmail] = useState('');
@@ -18,32 +19,36 @@ export default function Register({ onRegister }) {
       setPassword('');
       onRegister();
     } else {
-      setError(result.error || 'Erreur lors de l\'inscription');
+      setError(result.error || "Erreur lors de l'inscription");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Inscription</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        required
-      />
-      <br />
-      <input
-        type="password"
-        placeholder="Mot de passe"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        required
-      />
-      <br />
-      <button type="submit">S'inscrire</button>
-      {success && <p style={{color: 'green'}}>{success}</p>}
-      {error && <p style={{color: 'red'}}>{error}</p>}
-    </form>
+    <div className="auth-container">
+      <div className="auth-card">
+        <form onSubmit={handleSubmit}>
+          <h2>Inscription</h2>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+          />
+          <br />
+          <input
+            type="password"
+            placeholder="Mot de passe"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+          />
+          <br />
+          <button type="submit">S'inscrire</button>
+          {success && <p style={{color: 'green'}}>{success}</p>}
+          {error && <p style={{color: 'red'}}>{error}</p>}
+        </form>
+      </div>
+    </div>
   );
 }
