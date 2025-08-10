@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api'; // adapte selon l’URL de ton backend
+const API_URL = 'http://localhost:4000/api'; // adapte selon l’URL de ton backend
 
 // Enregistrement utilisateur
 export async function register(email, password) {
