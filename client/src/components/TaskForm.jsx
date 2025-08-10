@@ -15,7 +15,7 @@ export default function TaskForm({ token }) {
       setError('Le titre est obligatoire');
       return;
     }
-    const result = await createTask(token, title, dueDate);
+    const result = await createTask(token, { title, dueDate });
     if (result._id) {
       setSuccess('Tâche créée !');
       setTitle('');

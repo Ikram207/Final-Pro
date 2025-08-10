@@ -5,10 +5,14 @@ const generateToken = require('../utils/generateToken');
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
+  // Validate required fields
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'All fields (name, email, password) are required.' });
+  }
+
   const userExists = await User.findOne({ email });
   if (userExists) {
-    res.status(400);
-    throw new Error('User already exists');
+    return res.status(400).json({ error: 'User already exists' });
   }
 
   const user = await User.create({
@@ -25,8 +29,7 @@ const registerUser = async (req, res) => {
       token: generateToken(user._id),
     });
   } else {
-    res.status(400);
-    throw new Error('Invalid user data');
+    return res.status(400).json({ error: 'Invalid user data' });
   }
 };
 
@@ -43,8 +46,7 @@ const authUser = async (req, res) => {
       token: generateToken(user._id),
     });
   } else {
-    res.status(401);
-    throw new Error('Invalid email or password');
+    return res.status(401).json({ error: 'Invalid email or password' });
   }
 };
 

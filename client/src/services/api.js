@@ -1,11 +1,11 @@
 const API_URL = 'http://localhost:4000/api'; // adapte selon l’URL de ton backend
 
 // Enregistrement utilisateur
-export async function register(email, password) {
+export async function register(name, email, password) {
   const res = await fetch(`${API_URL}/users/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ name, email, password }),
   });
   return res.json();
 }

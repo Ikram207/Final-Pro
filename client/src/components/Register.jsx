@@ -3,6 +3,7 @@ import { register } from '../services/api';
 import '../styles/auth.css'; // Import du style
 
 export default function Register({ onRegister }) {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -12,9 +13,10 @@ export default function Register({ onRegister }) {
     e.preventDefault();
     setError('');
     setSuccess('');
-    const result = await register(email, password);
+    const result = await register(name, email, password);
     if (result.message) {
       setSuccess('Inscription réussie ! Vous pouvez vous connecter.');
+      setName('');
       setEmail('');
       setPassword('');
       onRegister();
@@ -28,6 +30,14 @@ export default function Register({ onRegister }) {
       <div className="auth-card">
         <form onSubmit={handleSubmit}>
           <h2>Inscription</h2>
+          <input
+            type="text"
+            placeholder="Nom"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            required
+          />
+          <br />
           <input
             type="email"
             placeholder="Email"

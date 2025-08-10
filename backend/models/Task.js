@@ -1,27 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const Task = require('../models/Task'); // ton modèle Task
+const mongoose = require('mongoose');
 
-// Modifier une tâche
-router.put('/:id', async (req, res) => {
-  try {
-    const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedTask) return res.status(404).json({ message: "Tâche non trouvée" });
-    res.json(updatedTask);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+const taskSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  title: { type: String, required: true },
+  status: { type: String, default: 'pending' },
+  dueDate: { type: Date },
+  description: { type: String },
+}, { timestamps: true });
 
-// Supprimer une tâche
-router.delete('/:id', async (req, res) => {
-  try {
-    const deletedTask = await Task.findByIdAndDelete(req.params.id);
-    if (!deletedTask) return res.status(404).json({ message: "Tâche non trouvée" });
-    res.json({ message: "Tâche supprimée" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-module.exports = router;
+module.exports = mongoose.model('Task', taskSchema);
