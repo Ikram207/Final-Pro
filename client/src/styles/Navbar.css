@@ -1,0 +1,41 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* espace entre gauche et droite */
+  background-color: #1e1e2f; /* fond foncé */
+  padding: 12px 24px;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-left {
+  display: flex;
+  gap: 15px; /* espacement entre boutons à gauche */
+}
+
+/* .navbar-right {
+  /* déconnexion à droite */
+/* } */ 
+
+.navbar button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px 15px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.navbar button:hover {
+  background-color: #3a3a5a;
+}
+
+.logout {
+  font-weight: bold;
+}
+
+.logout:hover {
+  background-color: #b03030;
+}

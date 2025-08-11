@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import '../styles/Idea.css';
 export default function IdeaTable({ ideas, onEdit, onDelete, onShowDetails }) {
   return (
     <table border="1" cellPadding="8" cellSpacing="0" style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -9,7 +9,7 @@ export default function IdeaTable({ ideas, onEdit, onDelete, onShowDetails }) {
           <th>Description</th>
           <th>Date début</th>
           <th>Date limite</th>
-          <th>Personne</th>
+          <th>Personne</th>S
           <th>Actions</th>
         </tr>
       </thead>

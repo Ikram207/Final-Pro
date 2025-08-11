@@ -1,0 +1,41 @@
+.idea-container {
+  background: #111827; /* Presque noir */
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.idea-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.idea-item {
+  background: #1f2937;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.idea-item h3 {
+  margin: 0;
+}
+
+.idea-item p {
+  color: #d1d5db;
+}
+
+.idea-item button {
+  background: #ff0c0c; /* Bleu */
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.idea-item button:hover {
+  background: #ee0a0a; /* Bleu foncé */
+}
