@@ -1,97 +1,88 @@
-// const asyncHandler = require('express-async-handler');
-// const Task = require('../models/Task');
+const asyncHandler = require('express-async-handler');
+const Task = require('../models/Task');
 
-// // Create task
-// const createTask = asyncHandler(async (req, res) => {
-//   const { title, status, dueDate, description } = req.body;
-//   if (!title) {
-//     res.status(400);
-//     throw new Error('Title is required');
-//   }
-//   const task = new Task({ user: req.user._id, title, status, dueDate, description });
-//   const createdTask = await task.save();
-//   res.status(201).json(createdTask);
-// });
+const createTask = asyncHandler(async (req, res) => {
+  const { title, status, dueDate, description } = req.body;
+  const task = new Task({
+    user: req.user._id,
+    title,
+    status,
+    dueDate,
+    description,
+  });
 
-// // Get tasks for logged user
-// const getTasks = asyncHandler(async (req, res) => {
-//   const tasks = await Task.find({ user: req.user._id }).sort({ createdAt: -1 });
-//   res.json(tasks);
-// });
-
-// // Update task
-// const updateTask = asyncHandler(async (req, res) => {
-//   const task = await Task.findById(req.params.id);
-//   if (!task) { res.status(404); throw new Error('Task not found'); }
-//   if (task.user.toString() !== req.user._id.toString()) { res.status(401); throw new Error('Not authorized'); }
-
-//   const { title, status, dueDate, description } = req.body;
-//   task.title = title ?? task.title;
-//   task.status = status ?? task.status;
-//   task.dueDate = dueDate ?? task.dueDate;
-//   task.description = description ?? task.description;
-
-//   const updatedTask = await task.save();
-//   res.json(updatedTask);
-// });
-
-// // Delete task
-// const deleteTask = asyncHandler(async (req, res) => {
-//   const task = await Task.findById(req.params.id);
-//   if (!task) { res.status(404); throw new Error('Task not found'); }
-//   if (task.user.toString() !== req.user._id.toString()) { res.status(401); throw new Error('Not authorized'); }
-
-//   await task.remove();
-//   res.json({ message: 'Task removed' });
-// });
-
-// module.exports = { createTask, getTasks, updateTask, deleteTask };
-const Task = require('../models/taskModel'); // Assure-toi que c'est bien le bon chemin
-
-// Créer une tâche
-const createTask = async (req, res) => {
   try {
-    const { title, status, dueDate, description } = req.body;
-    const task = await Task.create({
-      user: req.user._id,
-      title,
-      status,
-      dueDate,
-      description,
-    });
-    res.status(201).json(task);
+    const createdTask = await task.save();
+    const result = createdTask.toObject();
+    // Assure que dueDate est une string ISO ou null
+    result.dueDate = result.dueDate ? result.dueDate.toISOString() : null;
+    res.status(201).json(result);
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la création de la tâche', error: error.message });
+    res.status(400);
+    throw new Error('Erreur lors de la création de la tâche');
   }
-};
+});
 
-// Récupérer les tâches
-const getTasks = async (req, res) => {
+const getTasks = asyncHandler(async (req, res) => {
+  const tasks = await Task.find({ user: req.user._id });
+  const results = tasks.map(t => {
+    const obj = t.toObject();
+    obj.dueDate = obj.dueDate ? obj.dueDate.toISOString() : null;
+    return obj;
+  });
+  res.json(results);
+});
+
+const updateTask = asyncHandler(async (req, res) => {
+  const task = await Task.findById(req.params.id);
+  if (!task) {
+    res.status(404);
+    throw new Error('Tâche non trouvée');
+  }
+  if (task.user.toString() !== req.user._id.toString()) {
+    res.status(401);
+    throw new Error('Non autorisé');
+  }
+
+  const { title, status, dueDate, description } = req.body;
+  task.title = title ?? task.title;
+  task.status = status ?? task.status;
+  task.dueDate = dueDate ?? task.dueDate;
+  task.description = description ?? task.description;
+
   try {
-    const tasks = await Task.find({ user: req.user._id });
-    res.json(tasks);
+    const updatedTask = await task.save();
+    const result = updatedTask.toObject();
+    result.dueDate = result.dueDate ? result.dueDate.toISOString() : null;
+    res.json(result);
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la récupération des tâches', error: error.message });
+    res.status(400);
+    throw new Error('Erreur lors de la mise à jour de la tâche');
   }
-};
+});
 
-// Supprimer une tâche
-const deleteTask = async (req, res) => {
+const deleteTask = asyncHandler(async (req, res) => {
+  const task = await Task.findById(req.params.id);
+  if (!task) {
+    res.status(404);
+    throw new Error('Tâche non trouvée');
+  }
+  if (task.user.toString() !== req.user._id.toString()) {
+    res.status(401);
+    throw new Error('Non autorisé');
+  }
   try {
-    const task = await Task.findById(req.params.id); // <- Cette méthode existe sur le modèle Mongoose
-    if (!task) {
-      return res.status(404).json({ message: 'Tâche non trouvée' });
-    }
-
-    if (task.user.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: 'Non autorisé à supprimer cette tâche' });
-    }
-
-    await task.deleteOne();
-    res.json({ message: 'Tâche supprimée avec succès' });
+    await task.remove();
+    res.json({ message: 'Tâche supprimée' });
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la suppression de la tâche', error: error.message });
+    res.status(500);
+    throw new Error('Erreur lors de la suppression de la tâche');
   }
-};
+});
 
-module.exports = { createTask, getTasks, deleteTask };
+module.exports = {
+  createTask,
+  getTasks,
+  updateTask,
+  deleteTask,
+};
