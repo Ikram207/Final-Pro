@@ -58,7 +58,7 @@ const fakeApi = {
   },
 };
 
-// ======== Composant Navbar ==========
+// ======== Navbar ==========
 function Navbar({ onLogout, userName }) {
   return (
     <nav
@@ -98,7 +98,7 @@ function Navbar({ onLogout, userName }) {
 }
 
 // ======== Login ==========
-function Login({ onLogin }) {
+function Login({ onLogin, goRegister }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -122,7 +122,8 @@ function Login({ onLogin }) {
         padding: 20,
         border: "1px solid #ccc",
         borderRadius: 8,
-        backgroundColor: "#fff",
+        backgroundColor: "#f9f9f9",
+        boxShadow: "0 0 10px rgba(0,0,0,0.1)",
       }}
     >
       <h2 style={{ textAlign: "center", marginBottom: 20 }}>Connexion</h2>
@@ -176,6 +177,17 @@ function Login({ onLogin }) {
           </p>
         )}
       </form>
+
+      {/* Lien vers inscription */}
+      <p style={{ textAlign: "center", marginTop: 15 }}>
+        Pas de compte ?{" "}
+        <span
+          onClick={goRegister}
+          style={{ color: "#007BFF", cursor: "pointer", textDecoration: "underline" }}
+        >
+          Inscrivez-vous
+        </span>
+      </p>
     </div>
   );
 }
@@ -214,7 +226,8 @@ function Register({ onRegister }) {
         padding: 20,
         border: "1px solid #ccc",
         borderRadius: 8,
-        backgroundColor: "#fff",
+        backgroundColor: "#f9f9f9",
+        boxShadow: "0 0 10px rgba(0,0,0,0.1)",
       }}
     >
       <h2 style={{ textAlign: "center", marginBottom: 20 }}>Inscription</h2>
@@ -291,7 +304,7 @@ function Register({ onRegister }) {
   );
 }
 
-// ======== TaskForm ==========
+// ======== TaskForm ========
 function TaskForm({ onSave, editingTask, cancelEdit }) {
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState("pending");
@@ -300,10 +313,10 @@ function TaskForm({ onSave, editingTask, cancelEdit }) {
 
   useEffect(() => {
     if (editingTask) {
-      setTitle(editingTask.title || "");
-      setStatus(editingTask.status || "pending");
-      setDueDate(editingTask.dueDate ? editingTask.dueDate.substring(0, 10) : "");
-      setDescription(editingTask.description || "");
+      setTitle(editingTask.title);
+      setStatus(editingTask.status);
+      setDueDate(editingTask.dueDate);
+      setDescription(editingTask.description);
     } else {
       setTitle("");
       setStatus("pending");
@@ -322,183 +335,53 @@ function TaskForm({ onSave, editingTask, cancelEdit }) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        marginBottom: 20,
-        border: "1px solid #ccc",
-        padding: 15,
-        borderRadius: 6,
-        backgroundColor: "#fff",
-      }}
-    >
+    <form onSubmit={handleSubmit} style={{ marginBottom: 20, padding: 15, border: "1px solid #ccc", borderRadius: 6, backgroundColor: "#fff" }}>
       <h3>{editingTask ? "Modifier une tâche" : "Ajouter une tâche"}</h3>
-
-      <div style={{ marginBottom: 10 }}>
-        <label>Titre :</label>
-        <br />
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          style={{ width: "100%", padding: 5 }}
-        />
-      </div>
-
-      <div style={{ marginBottom: 10 }}>
-        <label>Statut :</label>
-        <br />
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          required
-          style={{ width: "100%", padding: 5 }}
-        >
-          <option value="pending">En attente</option>
-          <option value="in-progress">En cours</option>
-          <option value="done">Terminé</option>
-        </select>
-      </div>
-
-      <div style={{ marginBottom: 10 }}>
-        <label>Date limite :</label>
-        <br />
-        <input
-          type="date"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
-          style={{ width: "100%", padding: 5 }}
-        />
-      </div>
-
-      <div style={{ marginBottom: 10 }}>
-        <label>Description :</label>
-        <br />
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          style={{ width: "100%", padding: 5 }}
-        />
-      </div>
-
-      <button type="submit" style={{ padding: "5px 10px" }}>
-        {editingTask ? "Mettre à jour" : "Enregistrer"}
+      <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titre" required style={{ width: "100%", padding: 8, marginBottom: 8 }} />
+      <select value={status} onChange={(e) => setStatus(e.target.value)} style={{ width: "100%", padding: 8, marginBottom: 8 }}>
+        <option value="pending">En attente</option>
+        <option value="in-progress">En cours</option>
+        <option value="done">Terminé</option>
+      </select>
+      <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} style={{ width: "100%", padding: 8, marginBottom: 8 }} />
+      <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" style={{ width: "100%", padding: 8, marginBottom: 8 }} />
+      <button type="submit" style={{ padding: 8, backgroundColor: "#007BFF", color: "#fff", border: "none", borderRadius: 4, marginRight: 5 }}>
+        {editingTask ? "Modifier" : "Ajouter"}
       </button>
-
-      {editingTask && (
-        <button
-          type="button"
-          onClick={cancelEdit}
-          style={{ padding: "5px 10px", marginLeft: 10, background: "#ccc" }}
-        >
-          Annuler
-        </button>
-      )}
+      {editingTask && <button type="button" onClick={cancelEdit} style={{ padding: 8, backgroundColor: "#6c757d", color: "#fff", border: "none", borderRadius: 4 }}>Annuler</button>}
     </form>
   );
 }
 
 // ======== TaskList ==========
-const statusColors = {
-  pending: "#f0ad4e",
-  "in-progress": "#0275d8",
-  done: "#5cb85c",
-};
-
+const statusColors = { pending: "#f0ad4e", "in-progress": "#0275d8", done: "#5cb85c" };
 function TaskList({ tasks, onEdit, onDelete }) {
   return (
-    <table
-      style={{
-        width: "100%",
-        borderCollapse: "collapse",
-        boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-        backgroundColor: "#fff",
-      }}
-    >
+    <table style={{ width: "100%", borderCollapse: "collapse", backgroundColor: "#fff", boxShadow: "0 0 5px rgba(0,0,0,0.1)" }}>
       <thead>
         <tr style={{ backgroundColor: "#007BFF", color: "#fff", textAlign: "left" }}>
-          <th style={{ padding: "10px" }}>Titre</th>
-          <th style={{ padding: "10px" }}>Statut</th>
-          <th style={{ padding: "10px" }}>Date limite</th>
-          <th style={{ padding: "10px" }}>Description</th>
-          <th style={{ padding: "10px" }}>Actions</th>
+          <th style={{ padding: 10 }}>Titre</th>
+          <th style={{ padding: 10 }}>Statut</th>
+          <th style={{ padding: 10 }}>Date limite</th>
+          <th style={{ padding: 10 }}>Description</th>
+          <th style={{ padding: 10 }}>Actions</th>
         </tr>
       </thead>
       <tbody>
-        {tasks.length > 0 ? (
-          tasks.map((task) => (
-            <tr
-              key={task.id}
-              style={{
-                borderBottom: "1px solid #ddd",
-                transition: "background-color 0.3s",
-                cursor: "default",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "")}
-            >
-              <td style={{ padding: "8px" }}>{task.title || "Titre manquant"}</td>
-              <td style={{ padding: "8px" }}>
-                <span
-                  style={{
-                    padding: "4px 8px",
-                    borderRadius: 12,
-                    color: "#fff",
-                    backgroundColor: statusColors[task.status] || "#6c757d",
-                    fontWeight: "bold",
-                    textTransform: "capitalize",
-                    fontSize: "0.9rem",
-                    display: "inline-block",
-                    minWidth: 90,
-                    textAlign: "center",
-                  }}
-                >
-                  {task.status || "Statut manquant"}
-                </span>
-              </td>
-              <td style={{ padding: "8px" }}>
-                {task.dueDate ? task.dueDate.substring(0, 10) : "Date manquante"}
-              </td>
-              <td style={{ padding: "8px" }}>{task.description || "Description manquante"}</td>
-              <td style={{ padding: "8px" }}>
-                <button
-                  onClick={() => onEdit(task)}
-                  style={{
-                    cursor: "pointer",
-                    marginRight: 8,
-                    backgroundColor: "#ffc107",
-                    border: "none",
-                    borderRadius: 4,
-                    padding: "4px 8px",
-                  }}
-                  title="Modifier"
-                >
-                  ✏️
-                </button>
-                <button
-                  onClick={() => {
-                    if (window.confirm("Confirmer la suppression ?")) onDelete(task.id);
-                  }}
-                  style={{
-                    cursor: "pointer",
-                    backgroundColor: "#dc3545",
-                    border: "none",
-                    borderRadius: 4,
-                    padding: "4px 8px",
-                    color: "#fff",
-                  }}
-                  title="Supprimer"
-                >
-                  🗑️
-                </button>
-              </td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="5" style={{ textAlign: "center", padding: 20 }}>
-              Aucune tâche disponible
+        {tasks.length > 0 ? tasks.map((task) => (
+          <tr key={task.id} style={{ borderBottom: "1px solid #ddd" }}>
+            <td style={{ padding: 8 }}>{task.title}</td>
+            <td style={{ padding: 8, color: statusColors[task.status] }}>{task.status}</td>
+            <td style={{ padding: 8 }}>{task.dueDate}</td>
+            <td style={{ padding: 8 }}>{task.description}</td>
+            <td style={{ padding: 8 }}>
+              <button onClick={() => onEdit(task)} style={{ marginRight: 5 }}>✏️</button>
+              <button onClick={() => { if(window.confirm("Supprimer cette tâche ?")) onDelete(task.id); }}>🗑️</button>
             </td>
+          </tr>
+        )) : (
+          <tr>
+            <td colSpan="5" style={{ textAlign: "center", padding: 10 }}>Aucune tâche</td>
           </tr>
         )}
       </tbody>
@@ -506,137 +389,91 @@ function TaskList({ tasks, onEdit, onDelete }) {
   );
 }
 
-// ======== APP PRINCIPAL ==========
-export default function App() {
-  const [token, setToken] = useState("");
-  const [userName, setUserName] = useState("");
-  const [view, setView] = useState("login"); // login | register | dashboard
+// ======== TaskFilter ==========
+function TaskFilter({ onFilterChange }) {
+  const [status, setStatus] = useState("");
+  const [sort, setSort] = useState("");
 
+  useEffect(() => {
+    onFilterChange({ status, sort });
+  }, [status, sort]);
+
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <select value={status} onChange={(e) => setStatus(e.target.value)} style={{ padding: 6, marginRight: 10 }}>
+        <option value="">Tous les statuts</option>
+        <option value="pending">En attente</option>
+        <option value="in-progress">En cours</option>
+        <option value="done">Terminé</option>
+      </select>
+      <select value={sort} onChange={(e) => setSort(e.target.value)} style={{ padding: 6 }}>
+        <option value="">Tri par défaut</option>
+        <option value="asc">Date croissante</option>
+        <option value="desc">Date décroissante</option>
+      </select>
+    </div>
+  );
+}
+
+// ======== App ==========
+export default function App() {
+  const [view, setView] = useState("login"); // login, register, dashboard
+  const [user, setUser] = useState("");
   const [tasks, setTasks] = useState([]);
+  const [filters, setFilters] = useState({});
   const [editingTask, setEditingTask] = useState(null);
 
-  // Charger les tâches quand on est connecté et sur dashboard
-  useEffect(() => {
-    if (token && view === "dashboard") {
-      fakeApi.getTasks().then(setTasks);
-    }
-  }, [token, view]);
-
-  // Connexion réussie
-  const handleLogin = (jwt, name) => {
-    setToken(jwt);
-    setUserName(name);
-    setView("dashboard");
-  };
-
-  // Déconnexion
-  const handleLogout = () => {
-    setToken("");
-    setUserName("");
-    setTasks([]);
-    setEditingTask(null);
-    setView("login");
-  };
-
-  // Enregistrer / modifier tâche
-  const handleSaveTask = (taskData) => {
-    if (editingTask) {
-      fakeApi.updateTask(editingTask.id, taskData).then((updated) => {
-        setTasks(tasks.map((t) => (t.id === updated.id ? updated : t)));
-        setEditingTask(null);
-      });
-    } else {
-      fakeApi.createTask(taskData).then((newTask) => {
-        setTasks([...tasks, newTask]);
-      });
-    }
-  };
-
-  // Supprimer tâche
-  const handleDeleteTask = (id) => {
-    fakeApi.deleteTask(id).then(() => {
-      setTasks(tasks.filter((t) => t.id !== id));
-      if (editingTask && editingTask.id === id) {
-        setEditingTask(null);
-      }
+  const filteredTasks = tasks
+    .filter((t) => !filters.status || t.status === filters.status)
+    .sort((a, b) => {
+      if (filters.sort === "asc") return new Date(a.dueDate) - new Date(b.dueDate);
+      if (filters.sort === "desc") return new Date(b.dueDate) - new Date(a.dueDate);
+      return 0;
     });
+
+  const addTask = (task) => {
+    if (editingTask) {
+      setTasks(tasks.map((t) => (t.id === editingTask.id ? { ...task, id: t.id } : t)));
+      setEditingTask(null);
+    } else {
+      setTasks([...tasks, { ...task, id: Date.now() }]);
+    }
   };
 
+  const deleteTask = (id) => setTasks(tasks.filter((t) => t.id !== id));
+
+  // --- Vues ---
   if (view === "login") {
     return (
-      <>
-        <Login onLogin={handleLogin} />
-        <p style={{ textAlign: "center" }}>
-          Pas encore de compte ?{" "}
-          <button
-            onClick={() => setView("register")}
-            style={{
-              color: "blue",
-              cursor: "pointer",
-              border: "none",
-              background: "none",
-              padding: 0,
-            }}
-          >
-            Inscrivez-vous
-          </button>
-        </p>
-      </>
+      <Login
+        onLogin={(token, name) => { setUser(name); setView("dashboard"); }}
+        goRegister={() => setView("register")}
+      />
     );
   }
 
   if (view === "register") {
-    return (
-      <>
-        <Register onRegister={() => setView("login")} />
-        <p style={{ textAlign: "center" }}>
-          Déjà un compte ?{" "}
-          <button
-            onClick={() => setView("login")}
-            style={{
-              color: "blue",
-              cursor: "pointer",
-              border: "none",
-              background: "none",
-              padding: 0,
-            }}
-          >
-            Connectez-vous
-          </button>
-        </p>
-      </>
-    );
+    return <Register onRegister={() => setView("login")} />;
   }
 
   if (view === "dashboard") {
     return (
-      <div
-        style={{
-          maxWidth: 900,
-          margin: "auto",
-          padding: 20,
-                   fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-          backgroundColor: "#f5f5f5",
-          minHeight: "100vh",
-        }}
-      >
-        <Navbar onLogout={handleLogout} userName={userName} />
-
+      <div style={{ padding: 20 }}>
+        <Navbar userName={user} onLogout={() => setView("login")} />
+        <TaskFilter onFilterChange={setFilters} />
         <TaskForm
-          onSave={handleSaveTask}
+          onSave={addTask}
           editingTask={editingTask}
           cancelEdit={() => setEditingTask(null)}
         />
-
         <TaskList
-          tasks={tasks}
+          tasks={filteredTasks}
           onEdit={setEditingTask}
-          onDelete={handleDeleteTask}
+          onDelete={deleteTask}
         />
       </div>
     );
   }
 
-  return null; // fallback, ne devrait jamais arriver
+  return null;
 }
-
